@@ -3,7 +3,6 @@ import openai
 import jinja2
 import os
 
-
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # Set up Jinja2 template rendering
