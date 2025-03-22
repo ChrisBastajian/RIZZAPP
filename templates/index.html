@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RizzApp</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
@@ -130,7 +131,7 @@
             position: absolute;
             top: 50px;
             left: 80px; /* Position the menu to the right of the chat box */
-            background-color: #fff;
+            background-color: #a8a7a7;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
@@ -148,6 +149,11 @@
             margin-bottom: 10px;
         }
 
+        /* Change the color of the Settings text */
+        .settings-menu {
+            color:black; /* You can change this to any color you want */
+        }
+
         .settings-menu select,
         .settings-menu input[type="checkbox"] {
             margin: 5px 0;
@@ -162,30 +168,39 @@
         <i class="fas fa-cog"></i>
     </button>
 
-    <!-- Settings Menu -->
-    <div class="settings-menu" id="settings-menu">
-        <h3>Settings</h3>
-        <div>
-            <label for="personality">Choose Personality:</label>
-            <select id="personality">
-                <option value="1">Charming</option>
-                <option value="2">Flirty</option>
-                <option value="3">Funny</option>
-                <option value="4">Confident</option>
-            </select>
-        </div>
-        <div>
-            <label for="mode-toggle">Light/Dark Mode</label>
-            <input type="checkbox" id="mode-toggle" onclick="toggleMode()"> Dark Mode
+<!-- Settings Menu -->
+<div class="settings-menu" id="settings-menu">
+    <h3>Settings</h3>
+    <div>
+        <label>Choose Personality:</label>
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="personality" value="Charming" class="radio-choice" onchange="updatePersonality('Charming')">
+                Charming
+            </label>
+            <label>
+                <input type="radio" name="personality" value="Flirty" class="radio-choice" onchange="updatePersonality('Flirty')">
+                Flirty
+            </label>
+            <label>
+                <input type="radio" name="personality" value="Funny" class="radio-choice" onchange="updatePersonality('Funny')">
+                Funny
+            </label>
+            <label>
+                <input type="radio" name="personality" value="Confident" class="radio-choice" onchange="updatePersonality('Confident')">
+                Confident
+            </label>
         </div>
     </div>
+</div>
+
 
     <div class="chat-container">
         <div class="chat-log" id="chat-log">
             <!-- Messages will appear here -->
         </div>
         <div class="input-box">
-            <textarea id="user-input" placeholder="What's Your Bata Message?" rows="2"></textarea>
+            <textarea id="user-input" placeholder="What's Your Beta Message?" rows="2"></textarea>
             <button onclick="sendMessage()">Rizz Her Up</button>
         </div>
     </div>
