@@ -4,16 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RizzApp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #424242;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: #424242; /* Default Dark Mode */
         }
+        /* Light Mode */
+        body.light-mode {
+            background-color: #ffffff;
+            color: #333;
+        }
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #424242;
+            color: #ffffff;
+        }
+
         .chat-container {
             width: 80%;
             max-width: 600px;
@@ -25,23 +38,29 @@
             flex-direction: column;
             height: 90vh;
             overflow: hidden;
+            position: relative; /* This allows positioning the cogwheel outside of the box */
         }
+
         .chat-log {
             flex-grow: 1;
             overflow-y: auto;
             margin-bottom: 20px;
             padding-right: 10px;
         }
+
         .message {
             display: flex;
             margin: 10px 0;
         }
+
         .message.ai {
             justify-content: flex-start;
         }
+
         .message.user {
             justify-content: flex-end;
         }
+
         .message p {
             max-width: 70%;
             padding: 10px 15px;
@@ -50,19 +69,23 @@
             line-height: 1.4;
             margin: 0;
         }
+
         .message.ai p {
             background-color: #e5e5ea;
             color: #333;
         }
+
         .message.user p {
             background-color: #4d90fe;
             color: white;
         }
+
         .input-box {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
+
         .input-box textarea {
             width: 80%;
             padding: 10px;
@@ -73,6 +96,7 @@
             resize: none;
             box-sizing: border-box;
         }
+
         .input-box button {
             padding: 10px 15px;
             border: none;
@@ -81,33 +105,120 @@
             border-radius: 20px;
             cursor: pointer;
         }
+
         .input-box button:hover {
             background-color: #3a75d9;
         }
+
+        /* Settings Button outside the chat box */
+        .settings-button {
+            position: absolute;
+            top: 20px;
+            left: 40px; /* Position the gear outside the chat box */
+            background-color: #4d90fe;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 10; /* Make sure the cogwheel is always on top */
+        }
+
+        /* Settings Menu */
+        .settings-menu {
+            position: absolute;
+            top: 50px;
+            left: 80px; /* Position the menu to the right of the chat box */
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            display: none;
+            width: 200px;
+            z-index: 9; /* Ensures the settings menu is always on top */
+        }
+
+        .settings-menu.active {
+            display: block;
+        }
+
+        .settings-menu label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .settings-menu select,
+        .settings-menu input[type="checkbox"] {
+            margin: 5px 0;
+            width: 100%;
+        }
     </style>
 </head>
-<body>
+<body class="dark-mode">
+
+    <!-- Settings Button -->
+    <button class="settings-button" onclick="toggleSettings()">
+        <i class="fas fa-cog"></i>
+    </button>
+
+    <!-- Settings Menu -->
+    <div class="settings-menu" id="settings-menu">
+        <h3>Settings</h3>
+        <div>
+            <label for="personality">Choose Personality:</label>
+            <select id="personality">
+                <option value="1">Charming</option>
+                <option value="2">Flirty</option>
+                <option value="3">Funny</option>
+                <option value="4">Confident</option>
+            </select>
+        </div>
+        <div>
+            <label for="mode-toggle">Light/Dark Mode</label>
+            <input type="checkbox" id="mode-toggle" onclick="toggleMode()"> Dark Mode
+        </div>
+    </div>
 
     <div class="chat-container">
         <div class="chat-log" id="chat-log">
             <!-- Messages will appear here -->
         </div>
         <div class="input-box">
-            <textarea id="user-input" placeholder="Whats Your Beta Message?" rows="2"></textarea>
+            <textarea id="user-input" placeholder="What's Your Bata Message?" rows="2"></textarea>
             <button onclick="sendMessage()">Rizz Her Up</button>
         </div>
     </div>
 
     <script>
-        // Send message when Enter key is pressed
-        document.getElementById('user-input').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();  // Prevents the default newline behavior in the textarea
-                sendMessage();           // Call sendMessage when Enter is pressed
-            }
+        let currentPersonality = "Charming"; // Default personality
+
+        // Toggle settings menu visibility
+        function toggleSettings() {
+            const settingsMenu = document.getElementById('settings-menu');
+            settingsMenu.classList.toggle('active');
+        }
+
+        // Handle personality change
+        document.getElementById('personality').addEventListener('change', function(event) {
+            currentPersonality = event.target.value;
         });
 
-        function sendMessage() {
+        // Toggle Light/Dark Mode
+        function toggleMode() {
+            const body = document.body;
+            const isDarkMode = body.classList.contains('dark-mode');
+            if (isDarkMode) {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+            } else {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+            }
+        }
+
+        // Send Message to AI
+        async function sendMessage() {
             const inputField = document.getElementById('user-input');
             const message = inputField.value.trim();
             if (message !== "") {
@@ -124,11 +235,11 @@
                 // Scroll to the bottom of the chat log
                 chatLog.scrollTop = chatLog.scrollHeight;
 
-                // Simulate AI response (for now)
+                // Simulate AI response based on personality
                 const aiMessage = document.createElement('div');
                 aiMessage.classList.add('message', 'ai');
                 const aiText = document.createElement('p');
-                aiText.textContent = "Razz Master: I'm here to make YOU an Alpha";
+                aiText.textContent = getAIResponse(message, currentPersonality);
                 aiMessage.appendChild(aiText);
                 chatLog.appendChild(aiMessage);
 
@@ -139,7 +250,17 @@
                 inputField.value = "";
             }
         }
-    </script>
 
+        // Get AI Response based on selected personality
+        function getAIResponse(userMessage, personality) {
+            switch (personality) {
+                case "1": return "Charming response: Let me sweep you off your feet!";
+                case "2": return "Flirty response: Are you ready to be wowed?";
+                case "3": return "Funny response: You just got roasted!";
+                case "4": return "Confident response: You're talking to the pro here!";
+                default: return "I'm not sure what personality this is!";
+            }
+        }
+    </script>
 </body>
 </html>
