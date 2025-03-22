@@ -1,11 +1,10 @@
 from aiohttp import web
 import openai
-import json
 import jinja2
-import aiohttp
+import os
 
-# OpenAI API Key
-openai.api_key = "your_openai_api_key"
+
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # Set up Jinja2 template rendering
 template_loader = jinja2.FileSystemLoader("templates")
