@@ -21,7 +21,7 @@ The app responds to the user's messages with personality, dynamically updating a
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/RizzApp.git
+git clone https://github.com/ChrisBastajian/RizzApp.git
 cd RizzApp
 ```
 
