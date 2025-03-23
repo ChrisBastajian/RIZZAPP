@@ -7,6 +7,7 @@ my_api_key = os.environ.get("GEMINI_API_KEY")
 genai.configure(api_key=my_api_key)
 model = genai.GenerativeModel("gemini-1.5-flash")
 
+
 async def handle_chat(request):
     try:
         data = await request.json()
