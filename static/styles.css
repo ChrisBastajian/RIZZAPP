@@ -15,7 +15,7 @@ body {
 /* Dark Mode */
 body.dark-mode {
     background-color: #424242;
-    color: white;
+    color: black;
 }
 
 .settings-menu.h3.dark-mode {
@@ -161,8 +161,6 @@ body.light-mode {
     display: none; /* Hidden by default */
 }
 
-}
-=======
 /* Settings Button (Cog Icon) */
 .settings-button {
     position: absolute;
@@ -232,7 +230,34 @@ body.light-mode .chat-container {
 
 body.light-mode .chat-log {
     background-color: #ffffff; /* White background for chat log in Light Mode */
-=======
-#settings-placeholder {
-    margin-top: 20px;
+}
+
+/* Rizz Container */
+.rizz-level {
+    position: relative;
+    left: 5vw;
+}
+
+/* Progress bar container */
+.progress-bar-container {
+    position: relative;
+    margin: auto;
+    width: 20px;
+    height: 50vh;
+    background-color: #f0f0f0;
+    border-radius: 15px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress bar itself */
+#progress-bar {
+    position: absolute;
+    bottom: 0;
+    width: 20px;
+    height: 1%;
+    background-color: #4caf50;
+    border-radius: 15px;
+    transition: height 0.5s;
+}
 

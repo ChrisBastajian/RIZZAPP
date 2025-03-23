@@ -45,7 +45,27 @@
         </div>
     </div>
 
+    <!-- Vertical progress bar to display the Rizz score with a value below -->
+     <div class="rizz-level">
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div> 
+        </div>
+        <p>Rizz Score: <span id="rizz-score">0</span>%</p>
+     </div>
+    
     <script>
+        // Rizz score
+        let userScore = 0;
+
+        function updateProgressBar(score) {
+            const progressBar = document.getElementById('progress-bar');
+            let percentage = Math.min(score, 100);
+            progressBar.style.height = percentage + "%";
+
+            const rizzScore = document.getElementById('rizz-score');
+            rizzScore.textContent = percentage;
+        }
+
         // Function to toggle the visibility of the settings menu
         function toggleSettings() {
             const settingsMenu = document.getElementById('settings-menu');
@@ -63,53 +83,99 @@
         }
 
         // Send Message to AI
-async function sendMessage() {
-    const inputField = document.getElementById('user-input');
-    const personalitySelect = document.getElementById('personality'); // Get selected personality
-    const message = inputField.value.trim();
-    const selectedPersona = personalitySelect.value; // Retrieve selected persona
+        async function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const personalitySelect = document.getElementById('personality');
+            const message = inputField.value.trim();
+            const selectedPersona = personalitySelect.value;
 
-    if (message !== "") {
-        const chatLog = document.getElementById('chat-log');
+            if (message !== "") {
+                const chatLog = document.getElementById('chat-log');
 
-        // User message
-        const userMessage = document.createElement('div');
-        userMessage.classList.add('message', 'user');
-        const userText = document.createElement('p');
-        userText.textContent = message;
-        userMessage.appendChild(userText);
-        chatLog.appendChild(userMessage);
+                // Display the user message
+                const userMessage = document.createElement('div');
+                userMessage.classList.add('message', 'user');
+                const userText = document.createElement('p');
+                userText.textContent = message;
+                userMessage.appendChild(userText);
+                chatLog.appendChild(userMessage);
 
-        // Clear the input field
-        inputField.value = "";
+                inputField.value = "";
+                chatLog.scrollTop = chatLog.scrollHeight;
 
-        // Scroll to the bottom
-        chatLog.scrollTop = chatLog.scrollHeight;
+                try {
+                    const prompt = `
+                        As a charismatic conversational AI with a ${selectedPersona} personality, evaluate the following message for its "rizz" level on a scale from 0 to 100.
+                        Consider the tone, wit, and context of the conversation and update the cumulative score by adding the current message's rizz value to the previous score of ${userScore}.
+                        Do not acknowledge the user's score or mention the rizz scale in your response. Also, do not acknowledge that you are evaluating the response or that you are AI.
+                        The response should feel like a natural continuation of the conversation, maintaining the selected persona.
+                        Message: "${message}"
+                        Please provide your answer in JSON format with two keys: "response" for your conversational reply and "score" for the updated cumulative rizz score.
+                    `;
 
-        // Send message to backend with persona
-        try {
-            const response = await fetch("/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: message, persona: selectedPersona }) // Include persona
-            });
+                    const response = await fetch("/chat", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ message: prompt, persona: selectedPersona })
+                    });
 
-            const data = await response.json();
+                    // Get the response as text
+                    // Get the response text from the fetch call
+                    const responseText = await response.text();
+                    console.log("Full response text:", responseText);
 
-            // AI response
-            const aiMessage = document.createElement('div');
-            aiMessage.classList.add('message', 'ai');
-            const aiText = document.createElement('p');
-            aiText.textContent = "Razz Master (" + selectedPersona + "): " + data.response;
-            aiMessage.appendChild(aiText);
-            chatLog.appendChild(aiMessage);
+                    // Parse the outer JSON object
+                    const outerData = JSON.parse(responseText);
 
-            chatLog.scrollTop = chatLog.scrollHeight;
-        } catch (error) {
-            console.error("Error:", error);
+                    // Now, use a regex to capture the inner JSON from the outerData.response property
+                    const innerJsonRegex = /```json\s*([\s\S]+?)\s*```/;
+                    const innerMatch = outerData.response.match(innerJsonRegex);
+
+                    if (innerMatch && innerMatch[1]) {
+                        const innerJsonStr = innerMatch[1].trim(); // the clean inner JSON string
+                        const innerData = JSON.parse(innerJsonStr); // parse the inner JSON
+
+                        console.log("Conversational Reply:", innerData.response);
+                        console.log("Rizz Score:", innerData.score);
+
+                        // Update UI with the inner data...
+                        userScore = Number(innerData.score);
+                        updateProgressBar(userScore);
+
+                        const aiMessage = document.createElement('div');
+                        aiMessage.classList.add('message', 'ai');
+                        const aiText = document.createElement('p');
+                        const displayText = `Razz Master (${selectedPersona}): ${innerData.response} (Rizz: ${userScore})`;
+
+                        typeWriter(aiText, displayText);
+                        aiMessage.appendChild(aiText);
+                        chatLog.appendChild(aiMessage);
+                    } else {
+                        console.error("Failed to extract inner JSON.");
+                    }
+                } catch (error) {
+                    console.error("Error sending message:", error);
+                }
+            }
         }
-    }
-}
+
+
+
+        // Function to simulate typing effect
+        // The speed is inversely proportional to the speed parameter, so a lower speed value results in faster typing
+        function typeWriter(element, text, index = 0, speed = 30) {
+            // Check if the index is less than the text length
+            if (index < text.length) {
+                // Append the next character to the element and recursively call the function after a delay
+                element.innerHTML = text.slice(0, index + 1);
+
+                // Scroll to the bottom of the chat log
+                const chatLog = document.getElementById('chat-log');
+                chatLog.scrollTop = chatLog.scrollHeight;
+
+                setTimeout(() => typeWriter(element, text, index + 1, speed), speed);
+            }
+        }
 
         // Toggle Light/Dark Mode
         function toggleMode() {
