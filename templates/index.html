@@ -5,196 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RizzApp</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            background-color: #424242; /* Default Dark Mode */
-        }
-        /* Light Mode */
-        body.light-mode {
-            background-color: #ffffff;
-            color: #333;
-        }
-        /* Dark Mode */
-        body.dark-mode {
-            background-color: #424242;
-            color: #ffffff;
-        }
-
-        .chat-container {
-            width: 80%;
-            max-width: 600px;
-            background-color: #5f5f5f;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            height: 90vh;
-            overflow: hidden;
-            position: relative; /* This allows positioning the cogwheel outside of the box */
-        }
-
-        .chat-log {
-            flex-grow: 1;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            padding-right: 10px;
-        }
-
-        .message {
-            display: flex;
-            margin: 10px 0;
-        }
-
-        .message.ai {
-            justify-content: flex-start;
-        }
-
-        .message.user {
-            justify-content: flex-end;
-        }
-
-        .message p {
-            max-width: 70%;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 16px;
-            line-height: 1.4;
-            margin: 0;
-        }
-
-        .message.ai p {
-            background-color: #e5e5ea;
-            color: #333;
-        }
-
-        .message.user p {
-            background-color: #4d90fe;
-            color: white;
-        }
-
-        .input-box {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .input-box textarea {
-            width: 80%;
-            padding: 10px;
-            font-size: 14px;
-            border-radius: 20px;
-            border: 1px solid #ddd;
-            outline: none;
-            resize: none;
-            box-sizing: border-box;
-        }
-
-        .input-box button {
-            padding: 10px 15px;
-            border: none;
-            background-color: #4d90fe;
-            color: white;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        .input-box button:hover {
-            background-color: #3a75d9;
-        }
-
-        /* Settings Button outside the chat box */
-        .settings-button {
-            position: absolute;
-            top: 20px;
-            left: 40px; /* Position the gear outside the chat box */
-            background-color: #4d90fe;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            padding: 15px;
-            cursor: pointer;
-            font-size: 20px;
-            z-index: 10; /* Make sure the cogwheel is always on top */
-        }
-
-        /* Settings Menu */
-        .settings-menu {
-            position: absolute;
-            top: 50px;
-            left: 80px; /* Position the menu to the right of the chat box */
-            background-color: #a8a7a7;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            display: none;
-            width: 200px;
-            z-index: 9; /* Ensures the settings menu is always on top */
-        }
-
-        .settings-menu.active {
-            display: block;
-        }
-
-        .settings-menu label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        /* Change the color of the Settings text */
-        .settings-menu {
-            color:black; /* You can change this to any color you want */
-        }
-
-        .settings-menu select,
-        .settings-menu input[type="checkbox"] {
-            margin: 5px 0;
-            width: 100%;
-        }
-    </style>
 </head>
 <body class="dark-mode">
 
-    <!-- Settings Button -->
+    <!-- Settings Button (Cog) -->
     <button class="settings-button" onclick="toggleSettings()">
         <i class="fas fa-cog"></i>
     </button>
 
-<!-- Settings Menu -->
-<div class="settings-menu" id="settings-menu">
-    <h3>Settings</h3>
-    <div>
-        <label>Choose Personality:</label>
-        <div class="radio-group">
-            <label>
-                <input type="radio" name="personality" value="Charming" class="radio-choice" onchange="updatePersonality('Charming')">
-                Charming
-            </label>
-            <label>
-                <input type="radio" name="personality" value="Flirty" class="radio-choice" onchange="updatePersonality('Flirty')">
-                Flirty
-            </label>
-            <label>
-                <input type="radio" name="personality" value="Funny" class="radio-choice" onchange="updatePersonality('Funny')">
-                Funny
-            </label>
-            <label>
-                <input type="radio" name="personality" value="Confident" class="radio-choice" onchange="updatePersonality('Confident')">
-                Confident
-            </label>
-        </div>
+    <!-- Settings Menu (Hidden by default) -->
+    <div id="settings-menu" class="settings-menu">
+        <h3>Settings</h3>
+        <label for="personality">Select Personality:</label>
+        <select id="personality">
+            <option value="1">Charming</option>
+            <option value="2">Flirty</option>
+            <option value="3">Funny</option>
+            <option value="4">Confident</option>
+        </select>
+
+        <label for="mode-toggle">Toggle Dark/Light Mode</label>
+        <button onclick="toggleMode()">Toggle Mode</button>
     </div>
-</div>
 
+    <!-- Placeholder for loading the settings content -->
+    <div id="settings-placeholder"></div>
 
+    <!-- Chat Container -->
     <div class="chat-container">
         <div class="chat-log" id="chat-log">
             <!-- Messages will appear here -->
@@ -206,18 +45,57 @@
     </div>
 
     <script>
-        let currentPersonality = "Charming"; // Default personality
-
-        // Toggle settings menu visibility
+        // Function to toggle the visibility of the settings menu
         function toggleSettings() {
             const settingsMenu = document.getElementById('settings-menu');
             settingsMenu.classList.toggle('active');
         }
 
-        // Handle personality change
-        document.getElementById('personality').addEventListener('change', function(event) {
-            currentPersonality = event.target.value;
-        });
+        // Send Message to AI
+        async function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const message = inputField.value.trim();
+            if (message !== "") {
+                const chatLog = document.getElementById('chat-log');
+
+                // User message
+                const userMessage = document.createElement('div');
+                userMessage.classList.add('message', 'user');
+                const userText = document.createElement('p');
+                userText.textContent = message;
+                userMessage.appendChild(userText);
+                chatLog.appendChild(userMessage);
+
+                // Scroll to the bottom
+                chatLog.scrollTop = chatLog.scrollHeight;
+
+                // Send message to backend (e.g., using fetch API)
+                try {
+                    const response = await fetch("/chat", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ message: message })
+                    });
+
+                    const data = await response.json();
+
+                    // AI response
+                    const aiMessage = document.createElement('div');
+                    aiMessage.classList.add('message', 'ai');
+                    const aiText = document.createElement('p');
+                    aiText.textContent = "Razz Master: " + data.response;
+                    aiMessage.appendChild(aiText);
+                    chatLog.appendChild(aiMessage);
+
+                    chatLog.scrollTop = chatLog.scrollHeight;
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+
+                // Clear the input field
+                inputField.value = "";
+            }
+        }
 
         // Toggle Light/Dark Mode
         function toggleMode() {
@@ -229,63 +107,6 @@
             } else {
                 body.classList.remove('light-mode');
                 body.classList.add('dark-mode');
-            }
-        }
-
-        // Send Message to AI
-        async function sendMessage() {
-    const inputField = document.getElementById('user-input');
-    const message = inputField.value.trim();
-    if (message !== "") {
-        const chatLog = document.getElementById('chat-log');
-
-        // User message
-        const userMessage = document.createElement('div');
-        userMessage.classList.add('message', 'user');
-        const userText = document.createElement('p');
-        userText.textContent = message;
-        userMessage.appendChild(userText);
-        chatLog.appendChild(userMessage);
-
-        // Scroll to the bottom
-        chatLog.scrollTop = chatLog.scrollHeight;
-
-        // Send message to backend
-        try {
-            const response = await fetch("/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: message })
-            });
-
-            const data = await response.json();
-
-            // AI response
-            const aiMessage = document.createElement('div');
-            aiMessage.classList.add('message', 'ai');
-            const aiText = document.createElement('p');
-            aiText.textContent = "Razz Master: " + data.response;
-            aiMessage.appendChild(aiText);
-            chatLog.appendChild(aiMessage);
-
-            chatLog.scrollTop = chatLog.scrollHeight;
-        } catch (error) {
-            console.error("Error:", error);
-        }
-
-        // Clear the input field
-        inputField.value = "";
-    }
-}
-
-        // Get AI Response based on selected personality
-        function getAIResponse(userMessage, personality) {
-            switch (personality) {
-                case "1": return "Charming response: Let me sweep you off your feet!";
-                case "2": return "Flirty response: Are you ready to be wowed?";
-                case "3": return "Funny response: You just got roasted!";
-                case "4": return "Confident response: You're talking to the pro here!";
-                default: return "I'm not sure what personality this is!";
             }
         }
     </script>
