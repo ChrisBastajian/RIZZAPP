@@ -1,15 +1,35 @@
+import aiohttp
+import aiohttp.web as web
 import os
 import google.generativeai as genai
+
+# Configure Gemini AI
 my_api_key = os.environ.get("GEMINI_API_KEY")
-print(my_api_key)
+genai.configure(api_key=my_api_key)
+model = genai.GenerativeModel("gemini-1.5-flash")
 
-def generate():
-    genai.configure(api_key=my_api_key)
+async def handle_chat(request):
+    try:
+        data = await request.json()
+        user_message = data.get("message", "")
 
-    model = genai.GenerativeModel("gemini-1.5-flash")  # Ensure you use the correct model version
-    response = model.generate_content("How is the weather today?")
+        if not user_message:
+            return web.json_response({"response": "I didn't catch that, could you say it again?"})
 
-    print(response.text)  # Proper way to access the response
+        response = model.generate_content(user_message)
+        ai_response = response.text if response and response.text else "I didn't get that. Try again!"
+
+        return web.json_response({"response": ai_response})
+    except Exception as e:
+        return web.json_response({"response": f"Error: {str(e)}"})
+
+async def serve_index(request):
+    return web.FileResponse(os.path.join("templates", "new_index.html"))
+
+
+app = web.Application()
+app.router.add_get("/", serve_index)
+app.router.add_post("/chat", handle_chat)
 
 if __name__ == "__main__":
-    generate()
+    web.run_app(app, host="0.0.0.0", port=8080)
