@@ -57,6 +57,7 @@ async def serve_index(request):
 
 # Setup aiohttp web application
 app = web.Application()
+app.router.add_static("/static", "static")
 app.router.add_get("/", serve_index)
 app.router.add_post("/chat", handle_chat)
 
