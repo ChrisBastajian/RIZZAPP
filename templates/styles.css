@@ -1,3 +1,4 @@
+/* styles.css */
 /* Body styles for dark and light modes */
 body {
     font-family: Arial, sans-serif;
@@ -62,6 +63,11 @@ body.light-mode {
 }
 
 /* Chat Log */
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
 .chat-log {
     flex-grow: 1;
     overflow-y: auto;
@@ -140,14 +146,42 @@ body.light-mode {
 
 /* Settings Menu Styles */
 .settings-menu {
+=======
+/* Settings Button (Cog Icon) */
+.settings-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #4d90fe;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 15px;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 10;
+    transition: background-color 0.3s ease;
+}
+
+/* Settings Button Hover Effect */
+.settings-button:hover {
+    background-color: #3a75d9;
+}
+
+/* Settings Menu Styles */
+.settings-menu {
+    top: 30px; /* Positioned below the cog */
+    left: 30px;
     background-color: #f5f5f5;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     max-width: 300px;
     position: absolute;
+
     top: 60px; /* Positioned below the cog */
     left: 20px;
+
     display: none; /* Hidden by default */
 }
 
@@ -182,4 +216,7 @@ body.light-mode .chat-container {
 
 body.light-mode .chat-log {
     background-color: #ffffff; /* White background for chat log in Light Mode */
-}
+=======
+#settings-placeholder {
+    margin-top: 20px;
+
