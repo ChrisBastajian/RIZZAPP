@@ -64,51 +64,60 @@
         // Send Message to AI
 async function sendMessage() {
     const inputField = document.getElementById('user-input');
-    const personalitySelect = document.getElementById('personality'); // Get selected personality
     const message = inputField.value.trim();
-    const selectedPersona = personalitySelect.value; // Retrieve selected persona
+    const selectedPersona = document.getElementById('personality').value;
+    const progressBar = document.getElementById("progress-bar");
+    const rizzScore = document.getElementById("rizz-score");
 
     if (message !== "") {
         const chatLog = document.getElementById('chat-log');
 
-        // User message
+        // Add User Message to Chat
         const userMessage = document.createElement('div');
         userMessage.classList.add('message', 'user');
-        const userText = document.createElement('p');
-        userText.textContent = message;
-        userMessage.appendChild(userText);
+        userMessage.innerHTML = `<p>${message}</p>`;
         chatLog.appendChild(userMessage);
 
-        // Clear the input field
-        inputField.value = "";
+        inputField.value = ""; // Clear input field
+        chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll
 
-        // Scroll to the bottom
-        chatLog.scrollTop = chatLog.scrollHeight;
-
-        // Send message to backend with persona
         try {
+            // Send message to AI backend
             const response = await fetch("/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: message, persona: selectedPersona }) // Include persona
+                body: JSON.stringify({ message: message, persona: selectedPersona })
             });
 
             const data = await response.json();
 
-            // AI response
+            // Add AI Response to Chat
             const aiMessage = document.createElement('div');
             aiMessage.classList.add('message', 'ai');
-            const aiText = document.createElement('p');
-            aiText.textContent = "Razz Master (" + selectedPersona + "): " + data.response;
-            aiMessage.appendChild(aiText);
+            aiMessage.innerHTML = `<p>Razz Master: ${data.response}</p>`;
             chatLog.appendChild(aiMessage);
 
-            chatLog.scrollTop = chatLog.scrollHeight;
+            chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll
+
+            // Send a second request to get rizz rating
+            const ratingResponse = await fetch("/rate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            });
+
+            const ratingData = await ratingResponse.json();
+
+            // Update Progress Bar with AI's rating
+            progressBar.value = ratingData.rating;
+            rizzScore.innerText = `${ratingData.rating}% Rizz`;
+
         } catch (error) {
             console.error("Error:", error);
         }
     }
 }
+
 
         // Toggle Light/Dark Mode
         function toggleMode() {
@@ -124,7 +133,8 @@ async function sendMessage() {
         }
     </script>
     <div class="progress-container">
-        <progress id="progress-bar" value="32" max="100">32%</progress>
+        <progress id="progress-bar" value="0" max="100"></progress>
+        <span id="rizz-score">0% Rizz</span>
     </div>
 
 </body>
