@@ -19,7 +19,7 @@
 <div id="settings-menu" class="settings-menu">
     <h3>Settings</h3>
     <label for="personality">Select Personality:</label>
-    <select id="personality">
+    <select id="personality" onchange="savePersonality()">
         <option value="friendly">Friendly</option>
         <option value="flirty">Flirty</option>
         <option value="funny">Funny</option>
@@ -40,8 +40,7 @@
         <!-- Messages will appear here -->
     </div>
     <div class="input-box">
-        <textarea id="user-input" placeholder="What's Your Beta Message?" rows="2"
-                  onkeypress="checkForEnter()"></textarea>
+        <textarea id="user-input" placeholder="What's Your Beta Message?" rows="2" onkeypress="checkForEnter()"></textarea>
         <button onclick="sendMessage()">Rizz Her Up</button>
     </div>
 </div>
@@ -121,25 +120,22 @@
                 });
 
                 // Get the response as text
-                // Get the response text from the fetch call
                 const responseText = await response.text();
                 console.log("Full response text:", responseText);
 
                 // Parse the outer JSON object
                 const outerData = JSON.parse(responseText);
 
-                // Now, use a regex to capture the inner JSON from the outerData.response property
                 const innerJsonRegex = /```json\s*([\s\S]+?)\s*```/;
                 const innerMatch = outerData.response.match(innerJsonRegex);
 
                 if (innerMatch && innerMatch[1]) {
-                    const innerJsonStr = innerMatch[1].trim(); // the clean inner JSON string
-                    const innerData = JSON.parse(innerJsonStr); // parse the inner JSON
+                    const innerJsonStr = innerMatch[1].trim();
+                    const innerData = JSON.parse(innerJsonStr);
 
                     console.log("Conversational Reply:", innerData.response);
                     console.log("Rizz Score:", innerData.score);
 
-                    // Update UI with the inner data...
                     userScore = Number(innerData.score);
                     updateProgressBar(userScore);
 
@@ -160,16 +156,11 @@
         }
     }
 
-
     // Function to simulate typing effect
-    // The speed is inversely proportional to the speed parameter, so a lower speed value results in faster typing
     function typeWriter(element, text, index = 0, speed = 30) {
-        // Check if the index is less than the text length
         if (index < text.length) {
-            // Append the next character to the element and recursively call the function after a delay
             element.innerHTML = text.slice(0, index + 1);
 
-            // Scroll to the bottom of the chat log
             const chatLog = document.getElementById('chat-log');
             chatLog.scrollTop = chatLog.scrollHeight;
 
@@ -177,7 +168,7 @@
         }
     }
 
-    // Toggle Light/Dark Mode
+    // Function to toggle Light/Dark Mode
     function toggleMode() {
         const body = document.body;
         const isDarkMode = body.classList.contains('dark-mode');
@@ -189,8 +180,16 @@
             body.classList.add('dark-mode');
         }
     }
+
+    // Load the selected personality from localStorage on page load
+    window.onload = function() {
+        const savedPersonality = localStorage.getItem("selectedPersonality");
+        if (savedPersonality) {
+            const personalitySelect = document.getElementById('personality');
+            personalitySelect.value = savedPersonality; // Set the dropdown value
+        }
+    }
 </script>
 
 </body>
 </html>
-
