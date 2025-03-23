@@ -63,12 +63,15 @@ async def handle_chat(request):
 
 async def serve_index(request):
     return web.FileResponse(os.path.join("templates", "index.html"))
+async def serve_homepage(request):
+    return web.FileResponse(os.path.join("templates", "homepage.html"))
 
 
 # Setup aiohttp web application
 app = web.Application()
 app.router.add_static("/static", "static")
-app.router.add_get("/", serve_index)
+app.router.add_get("/", serve_homepage)
+app.router.add_get("/index", serve_index)
 app.router.add_post("/chat", handle_chat)
 
 if __name__ == "__main__":
