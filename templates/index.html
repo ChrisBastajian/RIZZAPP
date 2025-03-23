@@ -10,132 +10,187 @@
 </head>
 <body class="dark-mode">
 
-    <!-- Settings Button (Cog) -->
-    <button class="settings-button" onclick="toggleSettings()">
-        <i class="fas fa-cog"></i>
-    </button>
+<!-- Settings Button (Cog) -->
+<button class="settings-button" onclick="toggleSettings()">
+    <i class="fas fa-cog"></i>
+</button>
 
-    <!-- Settings Menu (Hidden by default) -->
-    <div id="settings-menu" class="settings-menu">
-        <h3>Settings</h3>
-        <label for="personality">Select Personality:</label>
-        <select id="personality">
-            <option value="friendly">Friendly</option>
-            <option value="flirty">Flirty</option>
-            <option value="funny">Funny</option>
-            <option value="confident">Confident</option>
-            <option value="authoritative">Authoritative</option>
-        </select>
+<!-- Settings Menu (Hidden by default) -->
+<div id="settings-menu" class="settings-menu">
+    <h3>Settings</h3>
+    <label for="personality">Select Personality:</label>
+    <select id="personality">
+        <option value="friendly">Friendly</option>
+        <option value="flirty">Flirty</option>
+        <option value="funny">Funny</option>
+        <option value="confident">Confident</option>
+        <option value="authoritative">Authoritative</option>
+    </select>
 
-        <label for="mode-toggle">Toggle Dark/Light Mode</label>
-        <button onclick="toggleMode()">Toggle Mode</button>
+    <label for="mode-toggle">Toggle Dark/Light Mode</label>
+    <button onclick="toggleMode()">Toggle Mode</button>
+</div>
+
+<!-- Placeholder for loading the settings content -->
+<div id="settings-placeholder"></div>
+
+<!-- Chat Container -->
+<div class="chat-container">
+    <div class="chat-log" id="chat-log">
+        <!-- Messages will appear here -->
     </div>
-
-    <!-- Placeholder for loading the settings content -->
-    <div id="settings-placeholder"></div>
-
-    <!-- Chat Container -->
-    <div class="chat-container">
-        <div class="chat-log" id="chat-log">
-            <!-- Messages will appear here -->
-        </div>
-        <div class="input-box">
-            <textarea id="user-input" placeholder="What's Your Beta Message?" rows="2" onkeypress="checkForEnter()"></textarea>
-            <button onclick="sendMessage()">Rizz Her Up</button>
-        </div>
+    <div class="input-box">
+        <textarea id="user-input" placeholder="What's Your Beta Message?" rows="2"
+                  onkeypress="checkForEnter()"></textarea>
+        <button onclick="sendMessage()">Rizz Her Up</button>
     </div>
-    <script>
-        // Function to toggle the visibility of the settings menu
-        function toggleSettings() {
-            const settingsMenu = document.getElementById('settings-menu');
-            settingsMenu.classList.toggle('active');
-        }
+</div>
 
-        // Function to check if the Enter key is pressed
-        function checkForEnter() {
-            if (event.key === "Enter" && !event.shiftKey) {
-                // Prevent the default behavior of the Enter key
-                event.preventDefault();
+<!-- Vertical progress bar to display the Rizz score with a value below -->
+<div class="rizz-level">
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <p>Rizz Score: <span id="rizz-score">0</span>%</p>
+</div>
 
-                sendMessage();
-            }
-        }
+<script>
+    // Rizz score
+    let userScore = 0;
 
-        // Send Message to AI
-async function sendMessage() {
-    const inputField = document.getElementById('user-input');
-    const message = inputField.value.trim();
-    const selectedPersona = document.getElementById('personality').value;
-    const progressBar = document.getElementById("progress-bar");
-    const rizzScore = document.getElementById("rizz-score");
+    function updateProgressBar(score) {
+        const progressBar = document.getElementById('progress-bar');
+        let percentage = Math.min(score, 100);
+        progressBar.style.height = percentage + "%";
 
-    if (message !== "") {
-        const chatLog = document.getElementById('chat-log');
+        const rizzScore = document.getElementById('rizz-score');
+        rizzScore.textContent = percentage;
+    }
 
-        // Add User Message to Chat
-        const userMessage = document.createElement('div');
-        userMessage.classList.add('message', 'user');
-        userMessage.innerHTML = `<p>${message}</p>`;
-        chatLog.appendChild(userMessage);
+    // Function to toggle the visibility of the settings menu
+    function toggleSettings() {
+        const settingsMenu = document.getElementById('settings-menu');
+        settingsMenu.classList.toggle('active');
+    }
 
-        inputField.value = ""; // Clear input field
-        chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll
+    // Function to check if the Enter key is pressed
+    function checkForEnter() {
+        if (event.key === "Enter" && !event.shiftKey) {
+            // Prevent the default behavior of the Enter key
+            event.preventDefault();
 
-        try {
-            // Send message to AI backend
-            const response = await fetch("/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: message, persona: selectedPersona })
-            });
-
-            const data = await response.json();
-
-            // Add AI Response to Chat
-            const aiMessage = document.createElement('div');
-            aiMessage.classList.add('message', 'ai');
-            aiMessage.innerHTML = `<p>Razz Master: ${data.response}</p>`;
-            chatLog.appendChild(aiMessage);
-
-            chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll
-
-            // Send a second request to get rizz rating
-            const ratingResponse = await fetch("/rate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: message })
-            });
-
-            const ratingData = await ratingResponse.json();
-
-            // Update Progress Bar with AI's rating
-            progressBar.value = ratingData.rating;
-            rizzScore.innerText = `${ratingData.rating}% Rizz`;
-
-        } catch (error) {
-            console.error("Error:", error);
+            sendMessage();
         }
     }
-}
 
+    // Send Message to AI
+    async function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        const personalitySelect = document.getElementById('personality');
+        const message = inputField.value.trim();
+        const selectedPersona = personalitySelect.value;
 
-        // Toggle Light/Dark Mode
-        function toggleMode() {
-            const body = document.body;
-            const isDarkMode = body.classList.contains('dark-mode');
-            if (isDarkMode) {
-                body.classList.remove('dark-mode');
-                body.classList.add('light-mode');
-            } else {
-                body.classList.remove('light-mode');
-                body.classList.add('dark-mode');
+        if (message !== "") {
+            const chatLog = document.getElementById('chat-log');
+
+            // Display the user message
+            const userMessage = document.createElement('div');
+            userMessage.classList.add('message', 'user');
+            const userText = document.createElement('p');
+            userText.textContent = message;
+            userMessage.appendChild(userText);
+            chatLog.appendChild(userMessage);
+
+            inputField.value = "";
+            chatLog.scrollTop = chatLog.scrollHeight;
+
+            try {
+                const prompt = `
+                        As a charismatic conversational AI with a ${selectedPersona} personality, evaluate the following message for its "rizz" level on a scale from 0 to 100.
+                        Consider the tone, wit, and context of the conversation and update the cumulative score by adding the current message's rizz value to the previous score of ${userScore}.
+                        Do not acknowledge the user's score or mention the rizz scale in your response. Also, do not acknowledge that you are evaluating the response or that you are AI.
+                        The response should feel like a natural continuation of the conversation, maintaining the selected persona.
+                        Message: "${message}"
+                        Please provide your answer in JSON format with two keys: "response" for your conversational reply and "score" for the updated cumulative rizz score.
+                    `;
+
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({message: prompt, persona: selectedPersona})
+                });
+
+                // Get the response as text
+                // Get the response text from the fetch call
+                const responseText = await response.text();
+                console.log("Full response text:", responseText);
+
+                // Parse the outer JSON object
+                const outerData = JSON.parse(responseText);
+
+                // Now, use a regex to capture the inner JSON from the outerData.response property
+                const innerJsonRegex = /```json\s*([\s\S]+?)\s*```/;
+                const innerMatch = outerData.response.match(innerJsonRegex);
+
+                if (innerMatch && innerMatch[1]) {
+                    const innerJsonStr = innerMatch[1].trim(); // the clean inner JSON string
+                    const innerData = JSON.parse(innerJsonStr); // parse the inner JSON
+
+                    console.log("Conversational Reply:", innerData.response);
+                    console.log("Rizz Score:", innerData.score);
+
+                    // Update UI with the inner data...
+                    userScore = Number(innerData.score);
+                    updateProgressBar(userScore);
+
+                    const aiMessage = document.createElement('div');
+                    aiMessage.classList.add('message', 'ai');
+                    const aiText = document.createElement('p');
+                    const displayText = `Razz Master (${selectedPersona}): ${innerData.response} (Rizz: ${userScore})`;
+
+                    typeWriter(aiText, displayText);
+                    aiMessage.appendChild(aiText);
+                    chatLog.appendChild(aiMessage);
+                } else {
+                    console.error("Failed to extract inner JSON.");
+                }
+            } catch (error) {
+                console.error("Error sending message:", error);
             }
         }
-    </script>
-    <div class="progress-container">
-        <progress id="progress-bar" value="0" max="100"></progress>
-        <span id="rizz-score">0% Rizz</span>
-    </div>
+    }
+
+
+    // Function to simulate typing effect
+    // The speed is inversely proportional to the speed parameter, so a lower speed value results in faster typing
+    function typeWriter(element, text, index = 0, speed = 30) {
+        // Check if the index is less than the text length
+        if (index < text.length) {
+            // Append the next character to the element and recursively call the function after a delay
+            element.innerHTML = text.slice(0, index + 1);
+
+            // Scroll to the bottom of the chat log
+            const chatLog = document.getElementById('chat-log');
+            chatLog.scrollTop = chatLog.scrollHeight;
+
+            setTimeout(() => typeWriter(element, text, index + 1, speed), speed);
+        }
+    }
+
+    // Toggle Light/Dark Mode
+    function toggleMode() {
+        const body = document.body;
+        const isDarkMode = body.classList.contains('dark-mode');
+        if (isDarkMode) {
+            body.classList.remove('dark-mode');
+            body.classList.add('light-mode');
+        } else {
+            body.classList.remove('light-mode');
+            body.classList.add('dark-mode');
+        }
+    }
+</script>
 
 </body>
 </html>
+

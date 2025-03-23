@@ -15,7 +15,7 @@ body {
 /* Dark Mode */
 body.dark-mode {
     background-color: #424242;
-    color: white;
+    color: black;
 }
 
 .settings-menu.h3.dark-mode {
@@ -164,7 +164,7 @@ body.light-mode {
 /* Settings Button (Cog Icon) */
 .settings-button {
     position: absolute;
-    top: 40x;
+    top: 20px;
     left: 20px;
     background-color: #4d90fe;
     color: white;
@@ -231,78 +231,33 @@ body.light-mode .chat-container {
 body.light-mode .chat-log {
     background-color: #ffffff; /* White background for chat log in Light Mode */
 }
-#settings-placeholder {
-    margin-top: 20px;
-}
-.progress-container {
-    position: absolute;
-    right: 50px;
-    top: 100px;
-    height: 80%;
-    width: 20px; /*scroll bar width ~8px*/
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-body {
-    background-image: url('/images/duck final.png'); /* Path to your image */
-    background-size: cover; /* Ensures it covers the entire screen */
-    background-position: center; /* Centers the image */
-    background-repeat: no-repeat; /* Prevents tiling */
-    height: 100vh; /* Makes sure the background covers full viewport */
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    color: white; /* Ensures text is readable on the image */
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.intro-text {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-header {
-    background-color: rgba(0, 0, 0, 0.6);
-    padding: 20px;
-    border-radius: 10px;
-    width: 50%;
-    text-align: center;
-}
-nav ul {
-    list-style: none;
-    padding: 0;
+
+/* Rizz Container */
+.rizz-level {
+    position: relative;
+    left: 5vw;
 }
 
+/* Progress bar container */
+.progress-bar-container {
+    position: relative;
+    margin: auto;
+    width: 20px;
+    height: 50vh;
+    background-color: #f0f0f0;
+    border-radius: 15px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress bar itself */
 #progress-bar {
-    writing-mode: vertical-lr; /* Make it vertical */
-    width: 100%; /* Fill container width */
-    height: 100%; /* Full height */
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-
-
-nav ul li {
-    display: inline;
-    margin: 10px;
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-}
-
-footer {
     position: absolute;
     bottom: 0;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 10px;
+    width: 20px;
+    height: 1%;
+    background-color: #4caf50;
+    border-radius: 15px;
+    transition: height 0.5s;
 }
+
