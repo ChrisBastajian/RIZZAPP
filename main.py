@@ -3,7 +3,6 @@ import aiohttp.web as web
 import os
 import google.generativeai as genai
 
-# Configure Gemini AI
 my_api_key = os.environ.get("GEMINI_API_KEY")
 genai.configure(api_key=my_api_key)
 model = genai.GenerativeModel("gemini-1.5-flash")
