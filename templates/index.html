@@ -20,10 +20,11 @@
         <h3>Settings</h3>
         <label for="personality">Select Personality:</label>
         <select id="personality">
-            <option value="1">Charming</option>
-            <option value="2">Flirty</option>
-            <option value="3">Funny</option>
-            <option value="4">Confident</option>
+            <option value="friendly">Friendly</option>
+            <option value="flirty">Flirty</option>
+            <option value="funny">Funny</option>
+            <option value="confident">Confident</option>
+            <option value="authoritative">Authoritative</option>
         </select>
 
         <label for="mode-toggle">Toggle Dark/Light Mode</label>
@@ -39,11 +40,10 @@
             <!-- Messages will appear here -->
         </div>
         <div class="input-box">
-            <textarea id="user-input" placeholder="What's Your Beta Message?" rows="2"></textarea>
+            <textarea id="user-input" placeholder="What's Your Beta Message?" rows="2" onkeypress="checkForEnter()"></textarea>
             <button onclick="sendMessage()">Rizz Her Up</button>
         </div>
     </div>
-
     <script>
         // Function to toggle the visibility of the settings menu
         function toggleSettings() {
@@ -51,51 +51,73 @@
             settingsMenu.classList.toggle('active');
         }
 
-        // Send Message to AI
-        async function sendMessage() {
-            const inputField = document.getElementById('user-input');
-            const message = inputField.value.trim();
-            if (message !== "") {
-                const chatLog = document.getElementById('chat-log');
+        // Function to check if the Enter key is pressed
+        function checkForEnter() {
+            if (event.key === "Enter" && !event.shiftKey) {
+                // Prevent the default behavior of the Enter key
+                event.preventDefault();
 
-                // User message
-                const userMessage = document.createElement('div');
-                userMessage.classList.add('message', 'user');
-                const userText = document.createElement('p');
-                userText.textContent = message;
-                userMessage.appendChild(userText);
-                chatLog.appendChild(userMessage);
-
-                // Scroll to the bottom
-                chatLog.scrollTop = chatLog.scrollHeight;
-
-                // Send message to backend (e.g., using fetch API)
-                try {
-                    const response = await fetch("/chat", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ message: message })
-                    });
-
-                    const data = await response.json();
-
-                    // AI response
-                    const aiMessage = document.createElement('div');
-                    aiMessage.classList.add('message', 'ai');
-                    const aiText = document.createElement('p');
-                    aiText.textContent = "Razz Master: " + data.response;
-                    aiMessage.appendChild(aiText);
-                    chatLog.appendChild(aiMessage);
-
-                    chatLog.scrollTop = chatLog.scrollHeight;
-                } catch (error) {
-                    console.error("Error:", error);
-                }
-
-                // Clear the input field
-                inputField.value = "";
+                sendMessage();
             }
         }
+
+        // Send Message to AI
+async function sendMessage() {
+    const inputField = document.getElementById('user-input');
+    const message = inputField.value.trim();
+    const selectedPersona = document.getElementById('personality').value;
+    const progressBar = document.getElementById("progress-bar");
+    const rizzScore = document.getElementById("rizz-score");
+
+    if (message !== "") {
+        const chatLog = document.getElementById('chat-log');
+
+        // Add User Message to Chat
+        const userMessage = document.createElement('div');
+        userMessage.classList.add('message', 'user');
+        userMessage.innerHTML = `<p>${message}</p>`;
+        chatLog.appendChild(userMessage);
+
+        inputField.value = ""; // Clear input field
+        chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll
+
+        try {
+            // Send message to AI backend
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message, persona: selectedPersona })
+            });
+
+            const data = await response.json();
+
+            // Add AI Response to Chat
+            const aiMessage = document.createElement('div');
+            aiMessage.classList.add('message', 'ai');
+            aiMessage.innerHTML = `<p>Razz Master: ${data.response}</p>`;
+            chatLog.appendChild(aiMessage);
+
+            chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll
+
+            // Send a second request to get rizz rating
+            const ratingResponse = await fetch("/rate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            });
+
+            const ratingData = await ratingResponse.json();
+
+            // Update Progress Bar with AI's rating
+            progressBar.value = ratingData.rating;
+            rizzScore.innerText = `${ratingData.rating}% Rizz`;
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+}
+
 
         // Toggle Light/Dark Mode
         function toggleMode() {
@@ -110,6 +132,10 @@
             }
         }
     </script>
+    <div class="progress-container">
+        <progress id="progress-bar" value="0" max="100"></progress>
+        <span id="rizz-score">0% Rizz</span>
+    </div>
 
 </body>
 </html>
