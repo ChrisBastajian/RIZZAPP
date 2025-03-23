@@ -161,8 +161,6 @@ body.light-mode {
     display: none; /* Hidden by default */
 }
 
-}
-=======
 /* Settings Button (Cog Icon) */
 .settings-button {
     position: absolute;
@@ -232,7 +230,27 @@ body.light-mode .chat-container {
 
 body.light-mode .chat-log {
     background-color: #ffffff; /* White background for chat log in Light Mode */
-=======
+}
 #settings-placeholder {
     margin-top: 20px;
+}
+.progress-container {
+    position: absolute;
+    right: 50px;
+    top: 100px;
+    height: 80%;
+    width: 20px; /*scroll bar width ~8px*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#progress-bar {
+    writing-mode: vertical-lr; /* Make it vertical */
+    width: 100%; /* Fill container width */
+    height: 100%; /* Full height */
+    appearance: none;
+    -webkit-appearance: none;
+}
+
 
