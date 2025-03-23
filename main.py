@@ -1,43 +1,35 @@
-from aiohttp import web
-import openai
-import json
-import jinja2
 import aiohttp
+import aiohttp.web as web
+import os
+import google.generativeai as genai
 
-# OpenAI API Key
-openai.api_key = "your_openai_api_key"
+my_api_key = os.environ.get("GEMINI_API_KEY")
+genai.configure(api_key=my_api_key)
+model = genai.GenerativeModel("gemini-1.5-flash")
 
-# Set up Jinja2 template rendering
-template_loader = jinja2.FileSystemLoader("templates")
-template_env = jinja2.Environment(loader=template_loader)
 
-async def index(request):
-    """Serve the HTML page."""
-    template = template_env.get_template("index.html")
-    return web.Response(text=template.render(), content_type="text/html")
-
-async def chat(request):
-    """Handle chat requests from frontend."""
+async def handle_chat(request):
     try:
         data = await request.json()
-        user_message = data.get("message")
+        user_message = data.get("message", "")
 
-        # Call OpenAI API
-        response = await openai.ChatCompletion.acreate(
-            model="gpt-4",
-            messages=[{"role": "user", "content": user_message}]
-        )
+        if not user_message:
+            return web.json_response({"response": "I didn't catch that, could you say it again?"})
 
-        bot_reply = response["choices"][0]["message"]["content"]
-        return web.json_response({"response": bot_reply})
+        response = model.generate_content(user_message)
+        ai_response = response.text if response and response.text else "I didn't get that. Try again!"
 
+        return web.json_response({"response": ai_response})
     except Exception as e:
-        return web.json_response({"error": str(e)}, status=500)
+        return web.json_response({"response": f"Error: {str(e)}"})
 
-# Create the aiohttp app and set routes
+async def serve_index(request):
+    return web.FileResponse(os.path.join("templates", "new_index.html"))
+
+
 app = web.Application()
-app.router.add_get("/", index)
-app.router.add_post("/chat", chat)
+app.router.add_get("/", serve_index)
+app.router.add_post("/chat", handle_chat)
 
 if __name__ == "__main__":
-    web.run_app(app, host="0.0.0.0", port=5000)  # Host on local network
+    web.run_app(app, host="0.0.0.0", port=8080)
