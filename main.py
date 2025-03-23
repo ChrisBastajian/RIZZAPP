@@ -24,7 +24,7 @@ async def handle_chat(request):
         return web.json_response({"response": f"Error: {str(e)}"})
 
 async def serve_index(request):
-    return web.FileResponse(os.path.join("templates", "new_index.html"))
+    return web.FileResponse(os.path.join("templates", "index.html"))
 
 
 app = web.Application()
