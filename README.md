@@ -3,10 +3,11 @@
 RizzApp is a web-based chatbot experience that uses the **Google Gemini API** to evaluate and interact with users based on their "Rizz" — a playful metric of charisma and charm.
 
 The app responds to the user's messages with personality, dynamically updating a "Rizz Meter" to reflect how smooth, funny, confident, or flirty the conversation is. Customize the AI's personality in real-time to be:
-- ✨ **Charming**
+- ✨ **Friendly**
 - 🔥 **Flirty**
 - 😂 **Funny**
 - 💪 **Confident**
+- 💪 **Authoritative**
 
 
 ## 🛠️ Features
