@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>homepage</title>
+    <link rel="icon" type="image/x-icon" href="/images/surprise.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Style the button */
+        .credits-btn {
+            position: fixed;
+            bottom: 60px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .credits-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Style the credits menu */
+        .credits-menu {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: black;
+            opacity: 0.5;
+            padding: 15px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 200px;
+            text-align: center;
+        }
+
+        .credits-menu p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .close-menu {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .close-menu:hover {
+            background-color: #da190b;
+        }
+    </style>
+</head>
+<body>
+
+
+<main>
+ <p class="intro-text">Uncover Your True Potential</p>
+</main>
+    <header>
+        <h1>Welcome to The RizzApp </h1>
+        <nav>
+            <ul>
+                <li><a href="#"><i class=></i> 🌹Charming</a></li>
+                <li><a href="#"><i class=></i> ❤️Flirty</a></li>
+                <li><a href="#"><i class=></i> 😂Funny</a></li>
+                <li><a href="#"><i class=></i> 😎Confident</a></li>
+                <li><a href="#"><i class=></i> 💪Authoritative</a></li>
+            </ul>
+        </nav>
+    </header>
+<!-- Credits Button -->
+<button class="credits-btn" onclick="toggleMenu()">Credits</button>
+
+<!-- Credits Menu -->
+<div id="creditsMenu" class="credits-menu">
+    <p>1. Thomas Rowden</p>
+    <p>2. Chris Bastajian</p>
+    <p>3. Zach Lain</p>
+    <p>4. Arina Rodionova</p>
+    <button class="close-menu" onclick="toggleMenu()">Close</button>
+</div>
+
+<footer>
+    <p>&copy; 2025 RizzApp</p>
+</footer>
+
+<script>
+    // Toggle the visibility of the credits menu
+    function toggleMenu() {
+        const menu = document.getElementById("creditsMenu");
+        if (menu.style.display === "block") {
+            menu.style.display = "none";
+        } else {
+            menu.style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>
