@@ -18,6 +18,10 @@ body.dark-mode {
     color: white;
 }
 
+.settings-menu.h3.dark-mode {
+    color: black;
+}
+
 /* Light Mode */
 body.light-mode {
     background-color: #ffffff;
@@ -59,7 +63,8 @@ body.light-mode {
     max-height: 90vh;
     position: relative;
     margin-top: 80px; /* Add margin for the settings button */
-    overflow: hidden;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 /* Chat Log */
